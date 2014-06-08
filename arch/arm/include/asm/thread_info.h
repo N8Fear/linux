@@ -185,5 +185,12 @@ extern int vfp_restore_user_hwstate(struct user_vfp __user *,
  */
 #define _TIF_WORK_MASK		(_TIF_NEED_RESCHED | _TIF_SIGPENDING | _TIF_NOTIFY_RESUME)
 
+
+#define current_stack_pointer ({		\
+	unsigned long sp;			\
+	asm("mov sp,%0" : "=g" (sp));	\
+	sp;					\
+})
+
 #endif /* __KERNEL__ */
 #endif /* __ASM_ARM_THREAD_INFO_H */
