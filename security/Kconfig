@@ -196,7 +196,7 @@ depends on (GRKERNSEC && GRKERNSEC_CONFIG_AUTO)
 
 config GRKERNSEC_PROC_GID
 	int "GID exempted from /proc restrictions"
-	default 1001
+	default 10
 	help
 	  Setting this GID determines which group will be exempted from
 	  grsecurity's /proc restrictions, allowing users of the specified
@@ -207,7 +207,7 @@ config GRKERNSEC_PROC_GID
 config GRKERNSEC_TPE_UNTRUSTED_GID
         int "GID for TPE-untrusted users"
         depends on GRKERNSEC_CONFIG_SERVER && GRKERNSEC_TPE && !GRKERNSEC_TPE_INVERT
-        default 1005
+        default 100
         help
 	  Setting this GID determines which group untrusted users should
 	  be added to.  These users will be placed under grsecurity's Trusted Path
@@ -219,7 +219,7 @@ config GRKERNSEC_TPE_UNTRUSTED_GID
 config GRKERNSEC_TPE_TRUSTED_GID
         int "GID for TPE-trusted users"
         depends on GRKERNSEC_CONFIG_SERVER && GRKERNSEC_TPE && GRKERNSEC_TPE_INVERT
-        default 1005
+        default 10
         help
           Setting this GID determines what group TPE restrictions will be
           *disabled* for.  If the sysctl option is enabled, a sysctl option
@@ -228,7 +228,7 @@ config GRKERNSEC_TPE_TRUSTED_GID
 config GRKERNSEC_SYMLINKOWN_GID
         int "GID for users with kernel-enforced SymlinksIfOwnerMatch"
         depends on GRKERNSEC_CONFIG_SERVER
-        default 1006
+        default 100
         help
           Setting this GID determines what group kernel-enforced
           SymlinksIfOwnerMatch will be enabled for.  If the sysctl option
@@ -268,7 +268,7 @@ config PAX_SOFTMODE
 
 config PAX_EI_PAX
 	bool 'Use legacy ELF header marking'
-	default y if GRKERNSEC_CONFIG_AUTO
+	depends on BROKEN
 	help
 	  Enabling this option will allow you to control PaX features on
 	  a per executable basis via the 'chpax' utility available at
@@ -428,7 +428,7 @@ config PAX_SEGMEXEC
 
 config PAX_EMUTRAMP
 	bool "Emulate trampolines"
-	default y if PARISC || GRKERNSEC_CONFIG_AUTO
+	default y
 	depends on (PAX_PAGEEXEC || PAX_SEGMEXEC) && (PARISC || X86)
 	help
 	  There are some programs and libraries that for one reason or
@@ -450,6 +450,12 @@ config PAX_EMUTRAMP
 	  Alternatively you can say N here and use the 'chpax' or 'paxctl'
 	  utilities to disable CONFIG_PAX_PAGEEXEC and CONFIG_PAX_SEGMEXEC
 	  for the affected files.
+
+	  NOTE: Hardened Gentoo users needs this option enabled for python
+	  to work properly.  Without it, all python apps, including portage,
+	  may fail.  By default, python has CONFIG_PAX_EMUTRAMP enabled by
+	  the ebuild when USE=pax_kernel is set, otherise CONFIG_PAX_PAGEEXEC
+	  is enabled as a fallback.
 
 	  NOTE: enabling this feature *may* open up a loophole in the
 	  protection provided by non-executable pages that an attacker
