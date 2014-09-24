@@ -49,7 +49,7 @@ struct proc_dir_entry {
 	u8 restricted; /* a directory in /proc/net that should be restricted via GRKERNSEC_PROC */
 	u8 namelen;
 	char name[];
-} __randomize_layout;
+} __no_randomize_layout;
 
 union proc_op {
 	int (*proc_get_link)(struct dentry *, struct path *);

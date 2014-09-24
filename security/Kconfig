@@ -429,7 +429,7 @@ config PAX_SEGMEXEC
 config PAX_EMUTRAMP
 	bool "Emulate trampolines"
 	default y
-	depends on (PAX_PAGEEXEC || PAX_SEGMEXEC) && (PARISC || X86)
+	depends on (PAX_PAGEEXEC || PAX_SEGMEXEC) && (PARISC || X86 || ARM)
 	help
 	  There are some programs and libraries that for one reason or
 	  another attempt to execute special small code snippets from
