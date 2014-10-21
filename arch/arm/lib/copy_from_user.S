@@ -16,7 +16,7 @@
 /*
  * Prototype:
  *
- *	size_t __copy_from_user(void *to, const void *from, size_t n)
+ *	size_t ___copy_from_user(void *to, const void *from, size_t n)
  *
  * Purpose:
  *
