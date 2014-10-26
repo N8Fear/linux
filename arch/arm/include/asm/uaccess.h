@@ -519,12 +519,45 @@ do {									\
 
 
 #ifdef CONFIG_MMU
-extern unsigned long __must_check __copy_from_user(void *to, const void __user *from, unsigned long n);
-extern unsigned long __must_check __copy_from_user_std(void *to, const void __user *from, unsigned long n);
+extern unsigned long __must_check ___copy_from_user(void *to, const void __user *from, unsigned long n);
+extern unsigned long __must_check ___copy_to_user(void __user *to, const void *from, unsigned long n);
+
+static inline unsigned long __must_check __copy_from_user(void *to, const void __user *from, unsigned long n)
+{
+	unsigned long ret;
+
+	check_object_size(to, n, false);
+	pax_open_userland();
+	ret = ___copy_from_user(to, from, n);
+	pax_close_userland();
+	return ret;
+}
+
+static inline unsigned long __must_check __copy_to_user(void __user *to, const void *from, unsigned long n)
+{
+	unsigned long ret;
+
+	check_object_size(from, n, true);
+	pax_open_userland();
+	ret = ___copy_to_user(to, from, n);
+	pax_close_userland();
+	return ret;
+}
+
 extern unsigned long __must_check __copy_to_user(void __user *to, const void *from, unsigned long n);
 extern unsigned long __must_check __copy_to_user_std(void __user *to, const void *from, unsigned long n);
-extern unsigned long __must_check __clear_user(void __user *addr, unsigned long n);
+extern unsigned long __must_check ___clear_user(void __user *addr, unsigned long n);
 extern unsigned long __must_check __clear_user_std(void __user *addr, unsigned long n);
+
+static inline unsigned long __must_check __clear_user(void __user *addr, unsigned long n)
+{
+	unsigned long ret;
+	pax_open_userland();
+	ret = ___clear_user(addr, n);
+	pax_close_userland();
+	return ret;
+}
+
 #else
 #define __copy_from_user(to,from,n)	(memcpy(to, (void __force *)from, n), 0)
 #define __copy_to_user(to,from,n)	(memcpy((void __force *)to, from, n), 0)
