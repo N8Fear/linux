@@ -19,6 +19,7 @@
 #include <linux/slab.h>
 #include <mach/gpio.h>
 #include <linux/gpio.h>
+#include <linux/pinctrl/consumer.h>
 #include <linux/platform_device.h>
 #include <mach/platform.h>
 
